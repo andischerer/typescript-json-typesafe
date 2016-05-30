@@ -1,0 +1,37 @@
+{
+  "name": "typescript-json-typesafe",
+  "description": "check json against typescript type definitions",
+  "version": "0.0.1",
+  "license": "MIT",
+  "repository": "andischerer/typescript-json-typesafe",
+  "author": {
+    "name": "Andreas Scherer",
+    "email": "t3asdev@googlemail.com"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && ava",
+    "prepublish": "typings install && npm run build"
+  },
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "typescript",
+    "json",
+    "typecheck",
+    "typesafe",
+    "interface",
+    "ts"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "ava": "0.15.1",
+    "typescript": "1.8.10"
+  }
+}
