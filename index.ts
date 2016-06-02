@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as ts from 'typescript';
+import * as reporter from './reporter';
 
 interface TSFile {
   text: string;
@@ -10,7 +11,7 @@ interface TSFiles {
   [fileName: string]: TSFile;
 }
 
-const scriptFileName = 'typedJsonTest.ts';
+const scriptFileName = 'typedJson.ts';
 
 // The tsconfig.json is found using the same method as `tsc`, starting in the current directory
 // and continuing up the parent directory chain.
@@ -86,21 +87,15 @@ function compile(typedJsonContent: string, jsonFileName: string) {
   };
 
   const languageService = ts.createLanguageService(serviceHost, ts.createDocumentRegistry());
-  const output = languageService.getEmitOutput(scriptFileName).outputFiles[0].text;
-  let errors = languageService.getSyntacticDiagnostics(scriptFileName).concat(languageService.getSemanticDiagnostics(scriptFileName)).map(error => {
-    const errorCategory = ts.DiagnosticCategory[error.category].toLowerCase();
-    let fileAndLineFromError = '';
-    let filename = (error.file) ? error.file.fileName : '';
-    if (filename === scriptFileName) {
-      fileAndLineFromError = (jsonFileName === scriptFileName) ? '(tested-JSON)' : jsonFileName;
-    } else {
-      const lineChar = error.file.getLineAndCharacterOfPosition(error.start);
-      fileAndLineFromError = `(${filename}:${lineChar.line + 1})`;
-    }
-    const errorCategoryAndCode = `${errorCategory} TS${error.code}: ${fileAndLineFromError} `;
-    return errorCategoryAndCode + ts.flattenDiagnosticMessageText(error.messageText, ts.sys.newLine);
-  });
-  return errors;
+  let diagnostics: ts.Diagnostic[];
+
+  // get and report any syntactic errors.
+  diagnostics = languageService.getSyntacticDiagnostics(scriptFileName)
+    .concat(languageService.getSemanticDiagnostics(scriptFileName));
+
+  // report any errors we ran into.
+  const errorFileName = (jsonFileName === scriptFileName) ? scriptFileName : jsonFileName;
+  return reporter.reportDiagnostics(diagnostics, errorFileName);
 }
 
 /**

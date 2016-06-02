@@ -1,5 +1,5 @@
-import fs = require('fs');
-import ts = require('typescript');
+import * as fs from 'fs';
+import * as ts from 'typescript';
 import test from 'ava';
 
 import {isTypeSafe} from '../';
