@@ -1,6 +1,6 @@
 {
   "name": "typescript-json-typesafe",
-  "description": "check json against typescript type definitions",
+  "description": "checks a JSON object against a specific type/interface",
   "version": "0.0.3",
   "license": "MIT",
   "repository": "andischerer/typescript-json-typesafe",
